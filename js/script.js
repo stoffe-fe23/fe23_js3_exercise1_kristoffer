@@ -20,7 +20,7 @@ window.addEventListener("load", (event) => {
 
 // Menu bar click events
 document.querySelector("nav > ul").addEventListener("click", (event) => {
-    if ((event.target.tagName == "LI") && (event.target.dataset.destination !== undefined)) {
+    if ((event.target.tagName == "BUTTON") && (event.target.dataset.destination !== undefined)) {
         history.pushState({ page: event.target.dataset.destination }, '', event.target.dataset.destination);
         loadPage(event.target.dataset.destination);
     }
@@ -48,6 +48,7 @@ async function loadPage(pagename) {
 }
 
 // Display indicator to user that the page is busy loading content
+// Load must take longer than 250 ms for indicator to appear. 
 function toggleBusyIndicator(isBusy = true) {
     clearTimeout(busyIndicatorDelayTimer);
     if (isBusy) {
