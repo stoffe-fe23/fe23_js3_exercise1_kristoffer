@@ -19,8 +19,9 @@ window.addEventListener("load", (event) => {
 // Menu bar click events
 document.querySelector("nav > ul").addEventListener("click", (event) => {
     if ((event.target.tagName == "LI") && (event.target.dataset.destination !== undefined)) {
+        toggleBusyIndicator();
         history.pushState({ page: event.target.dataset.destination }, '', event.target.dataset.destination);
-        loadPage(event.target.dataset.destination);
+        loadPage(event.target.dataset.destination).catch(hideBusyIndicator).catch(hideBusyIndicator);
     }
 });
 
@@ -36,4 +37,13 @@ async function loadPage(pagename) {
     catch (error) {
         console.error("Error loading page fragment", error);
     }
+}
+
+function hideBusyIndicator() {
+    toggleBusyIndicator(false);
+}
+
+function toggleBusyIndicator(isBusy = true) {
+    const busySpinner = document.querySelector("#busy-spinner");
+    busySpinner.classList[isBusy ? "add" : "remove"](".show");
 }
