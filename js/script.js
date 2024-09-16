@@ -1,4 +1,6 @@
 
+let busyIndicatorDelayTimer = null;
+
 // Front page is loaded by default
 loadPage("home");
 
@@ -47,8 +49,11 @@ async function loadPage(pagename) {
 
 // Display indicator to user that the page is busy loading content
 function toggleBusyIndicator(isBusy = true) {
-    const loadIndicator = document.querySelector("#loading-indicator");
-    if (loadIndicator) {
-        loadIndicator.classList[isBusy ? "add" : "remove"]("show");
+    clearTimeout(busyIndicatorDelayTimer);
+    if (isBusy) {
+        busyIndicatorDelayTimer = setTimeout(() => document.querySelector("#loading-indicator").classList.add("show"), 250);
+    }
+    else {
+        document.querySelector("#loading-indicator").classList.remove("show");
     }
 }
