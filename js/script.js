@@ -30,12 +30,15 @@ async function loadPage(pagename) {
         if (pagename && pagename.length) {
             toggleBusyIndicator();
             const result = await fetch(`parts/${pagename}.html`);
+            if (result.status >= 400)
+                throw new Error(`Unable to load the specified page (${result.status}): ${pagename}`);
+
             const response = await result.text();
             document.querySelector("#content").innerHTML = response;
         }
     }
     catch (error) {
-        console.error("Error loading page fragment", error);
+        console.error("loadPage Error: ", error.message);
     }
     finally {
         toggleBusyIndicator(false);
