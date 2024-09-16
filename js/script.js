@@ -1,20 +1,22 @@
 
 
-window.addEventListener('popstate', (event) => {
-    loadPage(`parts/${event.state.page}.html`);
-});
+loadPage("home");
 
+window.addEventListener('popstate', (event) => {
+    loadPage(event.state.page);
+});
 
 
 const navBar = document.querySelector("nav");
 if (navBar) {
     navBar.addEventListener("click", (event) => {
         history.pushState({ page: event.target.dataset.destination }, '', event.target.dataset.destination);
-        loadPage(`parts/${event.target.dataset.destination}.html`);
+        loadPage(event.target.dataset.destination);
     });
 }
 
 async function loadPage(pagename) {
+    pagename = `parts/${pagename}.html`;
     const result = await fetch(pagename);
     const response = await result.text();
     document.querySelector("#content").innerHTML = response;
