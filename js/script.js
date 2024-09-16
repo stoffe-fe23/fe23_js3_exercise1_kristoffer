@@ -16,8 +16,7 @@ if (navBar) {
 }
 
 async function loadPage(pagename) {
-    pagename = `parts/${pagename}.html`;
-    const result = await fetch(pagename);
+    const result = await fetch(`parts/${pagename}.html`);
     const response = await result.text();
     document.querySelector("#content").innerHTML = response;
 }
