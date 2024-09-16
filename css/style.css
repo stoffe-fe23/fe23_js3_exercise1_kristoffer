@@ -1,0 +1,7 @@
+#busy-spinner {
+    display: none;
+}
+
+#busy-spinner.show {
+    display: flex;
+}

@@ -19,9 +19,8 @@ window.addEventListener("load", (event) => {
 // Menu bar click events
 document.querySelector("nav > ul").addEventListener("click", (event) => {
     if ((event.target.tagName == "LI") && (event.target.dataset.destination !== undefined)) {
-        toggleBusyIndicator();
         history.pushState({ page: event.target.dataset.destination }, '', event.target.dataset.destination);
-        loadPage(event.target.dataset.destination).catch(hideBusyIndicator).catch(hideBusyIndicator);
+        loadPage(event.target.dataset.destination);
     }
 });
 
@@ -29,6 +28,7 @@ document.querySelector("nav > ul").addEventListener("click", (event) => {
 async function loadPage(pagename) {
     try {
         if (pagename && pagename.length) {
+            toggleBusyIndicator();
             const result = await fetch(`parts/${pagename}.html`);
             const response = await result.text();
             document.querySelector("#content").innerHTML = response;
@@ -37,13 +37,15 @@ async function loadPage(pagename) {
     catch (error) {
         console.error("Error loading page fragment", error);
     }
+    finally {
+        toggleBusyIndicator(false);
+    }
 }
 
-function hideBusyIndicator() {
-    toggleBusyIndicator(false);
-}
-
+// Display indicator to user that the page is busy loading content
 function toggleBusyIndicator(isBusy = true) {
     const busySpinner = document.querySelector("#busy-spinner");
-    busySpinner.classList[isBusy ? "add" : "remove"](".show");
+    if (busySpinner) {
+        busySpinner.classList[isBusy ? "add" : "remove"]("show");
+    }
 }
