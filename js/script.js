@@ -47,8 +47,8 @@ async function loadPage(pagename) {
 
 // Display indicator to user that the page is busy loading content
 function toggleBusyIndicator(isBusy = true) {
-    const busySpinner = document.querySelector("#busy-spinner");
-    if (busySpinner) {
-        busySpinner.classList[isBusy ? "add" : "remove"]("show");
+    const loadIndicator = document.querySelector("#loading-indicator");
+    if (loadIndicator) {
+        loadIndicator.classList[isBusy ? "add" : "remove"]("show");
     }
 }
