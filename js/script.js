@@ -1,5 +1,5 @@
 
-
+// Front page is loaded by default
 loadPage("home");
 
 // Load page content when navigating browser history
