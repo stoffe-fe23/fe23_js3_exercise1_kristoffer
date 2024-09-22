@@ -1,32 +1,36 @@
 
 let busyIndicatorDelayTimer = null;
 
-// Front page is loaded by default
-loadPage("home");
-
 
 // Load page content when navigating browser history
 window.addEventListener("popstate", (event) => {
     loadPage(event.state.page);
 });
 
-// Load specific sub-page if URL contains a page parameter
+// Load specific sub-page if URL contains a page parameter, or url has a fragment, otherwise front page. 
 window.addEventListener("load", (event) => {
     const page = new URLSearchParams(window.location.search).get("page");
+    const hash = window.location.hash.substring(1);
     if (page && page.length) {
         loadPage(page);
+    }
+    else if (hash && hash.length) {
+        loadPage(hash);
+    }
+    else {
+        loadPage("home");
     }
 });
 
 // Menu bar click events
 document.querySelector("nav > ul").addEventListener("click", (event) => {
     if ((event.target.tagName == "BUTTON") && (event.target.dataset.destination !== undefined)) {
-        history.pushState({ page: event.target.dataset.destination }, '', event.target.dataset.destination);
+        history.pushState({ page: event.target.dataset.destination }, '', "#" + event.target.dataset.destination);
         loadPage(event.target.dataset.destination);
     }
 });
 
-// Load sub-page content of the specified page
+// Load page content of the specified subpage
 async function loadPage(pagename) {
     try {
         if (pagename && pagename.length) {
