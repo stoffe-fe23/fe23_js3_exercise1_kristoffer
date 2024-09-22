@@ -61,8 +61,10 @@ function toggleBusyIndicator(isBusy = true) {
     }
 }
 
-// Load sub-page name and any parameters into globals
+// Ugly hack to load sub-page name and any parameters into globals. 
+// Params are extracted from the end of the hash fragment to make it look more similar to normal urls,
+// e.g. http://127.0.0.1/#contact?foo=bar instead of http://127.0.0.1/?foo=bar#contact
 function reloadPageInfo() {
-    let [hash, search] = window.location.hash.split("?");
-    return [hash.substring(1), new URLSearchParams(search ?? "")];
+    let [page, params] = window.location.hash.split("?");
+    return [page.substring(1), new URLSearchParams(params ?? "")];
 }
