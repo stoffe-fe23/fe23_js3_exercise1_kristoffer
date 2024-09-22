@@ -1,23 +1,20 @@
-
 let busyIndicatorDelayTimer = null;
+let [urlPage, urlParams] = reloadPageInfo();
 
-
-// Load page content when navigating browser history
+// Load subpage content when navigating browser history
 window.addEventListener("popstate", (event) => {
-    loadPage(event.state.page);
+    [urlPage, urlParams] = reloadPageInfo();
+    loadPage(event.state && event.state.page && event.state.page.length ? event.state.page : urlPage);
 });
 
-// Load specific sub-page if URL contains a page parameter, or url has a fragment, otherwise front page. 
+// Load specific sub-page content if URL contains a fragment, otherwise load front page. 
 window.addEventListener("load", (event) => {
-    const page = new URLSearchParams(window.location.search).get("page");
-    const hash = window.location.hash.substring(1);
-    if (page && page.length) {
-        loadPage(page);
-    }
-    else if (hash && hash.length) {
-        loadPage(hash);
+    [urlPage, urlParams] = reloadPageInfo();
+    if (urlPage && urlPage.length) {
+        loadPage(urlPage);
     }
     else {
+        history.pushState({ page: "home" }, '', "#home");
         loadPage("home");
     }
 });
@@ -33,6 +30,7 @@ document.querySelector("nav > ul").addEventListener("click", (event) => {
 // Load page content of the specified subpage
 async function loadPage(pagename) {
     try {
+        [urlPage, urlParams] = reloadPageInfo();
         if (pagename && pagename.length) {
             toggleBusyIndicator();
             const result = await fetch(`parts/${pagename}.html`);
@@ -61,4 +59,10 @@ function toggleBusyIndicator(isBusy = true) {
     else {
         document.querySelector("#loading-indicator").classList.remove("show");
     }
+}
+
+// Load sub-page name and any parameters into globals
+function reloadPageInfo() {
+    let [hash, search] = window.location.hash.split("?");
+    return [hash.substring(1), new URLSearchParams(search ?? "")];
 }
