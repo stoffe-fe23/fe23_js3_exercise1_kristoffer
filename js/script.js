@@ -1,17 +1,17 @@
 let busyIndicatorDelayTimer = null;
-let [urlPage, urlParams] = reloadPageInfo();
+
 
 // Load subpage content when navigating browser history
 window.addEventListener("popstate", (event) => {
-    [urlPage, urlParams] = reloadPageInfo();
-    loadPage(event.state && event.state.page && event.state.page.length ? event.state.page : urlPage);
+    reloadPageInfo();
+    loadPage(event.state && event.state.page && event.state.page.length ? event.state.page : window.location.spaPage);
 });
 
 // Load specific sub-page content if URL contains a fragment, otherwise load front page. 
 window.addEventListener("load", (event) => {
-    [urlPage, urlParams] = reloadPageInfo();
-    if (urlPage && urlPage.length) {
-        loadPage(urlPage);
+    reloadPageInfo();
+    if (window.location.spaPage && window.location.spaPage.length) {
+        loadPage(window.location.spaPage);
     }
     else {
         history.pushState({ page: "home" }, '', "#home");
@@ -30,7 +30,7 @@ document.querySelector("nav > ul").addEventListener("click", (event) => {
 // Load page content of the specified subpage
 async function loadPage(pagename) {
     try {
-        [urlPage, urlParams] = reloadPageInfo();
+        reloadPageInfo();
         if (pagename && pagename.length) {
             toggleBusyIndicator();
             const result = await fetch(`parts/${pagename}.html`);
@@ -65,6 +65,7 @@ function toggleBusyIndicator(isBusy = true) {
 // Params are extracted from the end of the hash fragment to make it look more similar to normal urls,
 // e.g. http://127.0.0.1/#contact?foo=bar instead of http://127.0.0.1/?foo=bar#contact
 function reloadPageInfo() {
-    let [page, params] = window.location.hash.split("?");
-    return [page.substring(1), new URLSearchParams(params ?? "")];
+    const [page, params] = window.location.hash.split("?");
+    window.location.spaPage = page.substring(1);
+    window.location.spaSearch = params;
 }
